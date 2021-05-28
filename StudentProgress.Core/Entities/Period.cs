@@ -31,17 +31,15 @@ namespace StudentProgress.Core.Entities
         {
             return date.Month switch
             {
-                8 => CreateFirstSemesterPeriod(date),
-                9 => CreateFirstSemesterPeriod(date),
-                1 => CreateSecondSemesterPeriod(date),
-                2 => CreateSecondSemesterPeriod(date),
-                _ => Result.Failure<Period>("Can only create a period from February or September")
+                <= 2          => CreateSecondSemesterPeriod(date.Year),
+                >= 3 and <= 9 => CreateFirstSemesterPeriod(date.Year),
+                _             => CreateSecondSemesterPeriod(date.Year + 1)
             };
         }
 
-        private static Result<Period> CreateFirstSemesterPeriod(DateTime date)
+        private static Result<Period> CreateFirstSemesterPeriod(int year)
         {
-            var startDate = new DateTime(date.Year, 9, 1);
+            var startDate = new DateTime(year, 9, 1);
 
             startDate = startDate.DayOfWeek switch
             {
@@ -53,9 +51,9 @@ namespace StudentProgress.Core.Entities
             return Result.Success(new Period(startDate));
         }
 
-        private static Result<Period> CreateSecondSemesterPeriod(DateTime date)
+        private static Result<Period> CreateSecondSemesterPeriod(int year)
         {
-            var startDate = new DateTime(date.Year, 2, 1);
+            var startDate = new DateTime(year, 2, 1);
 
             startDate = startDate.DayOfWeek switch
             {

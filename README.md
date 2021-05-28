@@ -201,4 +201,4 @@ The reason I used Dapper for this is that I wanted to test Dapper and because it
 See below the domain model of all the entities.
 Note that the ValueObjects and enums have been omitted to keep the model as simple as possible.
 
-![domain model](./docs/c4-model-domain.png)
+![domain model](./docs/c4-model-Domain.png)

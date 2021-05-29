@@ -2,6 +2,7 @@
 @model StudentProgress.Web.Pages.Progress.CreateEditModel
 @using StudentProgress.Core.Entities
 @using StudentProgress.Core.Extensions
+@using StudentProgress.Core.UseCases
 @{
   ViewData["Title"] = "Add Progress";
 }
@@ -92,17 +93,23 @@
             if (index == 0 || Model.Milestones[index - 1].LearningOutcome != milestone.LearningOutcome)
             {
               <tr>
-                <td colspan="4">
+                <td colspan="5">
                   <h4 id="@Model.MilestoneNavIds.GetValueOrDefault(milestone.LearningOutcome)" class="text-muted">@milestone.LearningOutcome</h4>
                 </td>
               </tr>
             }
             <tr>
-              <td class="align-middle">
-                @milestone.Artefact
-                <input type="hidden" name="Progress.Milestones[@index].MilestoneId" value="@milestone.Id"/>
-                <input type="hidden" name="Progress.Milestones[@index].Id" value="@Model.Progress.Milestones[index].Id"/>
-              </td>
+                <td class="align-middle">
+                    @milestone.Artefact
+                    <input type="hidden" name="Progress.Milestones[@index].MilestoneId" value="@milestone.Id"/>
+                    <input type="hidden" name="Progress.Milestones[@index].Id" value="@Model.Progress.Milestones[index].Id"/>
+                </td>
+                <td class="align-middle">
+                    @if (Model.Progress.Milestones[index].PreviousRating != null)
+                    {
+                        <label class="btn btn-outline-@MilestoneUiHelper.RatingColor((Rating) (Model.Progress.Milestones[index].PreviousRating))">@Model.Progress.Milestones[index].PreviousRating</label>
+                    }
+                </td>
               <td class="align-middle">
                 <div class="btn-group btn-group-sm" role="group" aria-label="@milestone.Artefact">
                   @for (int i = 0; i < Enum.GetValues<Rating>().Length; i++)

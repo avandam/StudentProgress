@@ -46,6 +46,7 @@ namespace StudentProgress.Core.UseCases
         {
             var student = await _context.Students.FirstOrDefaultAsync(s => s.Id == query.StudentId);
             var group = await _context.Groups.FirstOrDefaultAsync(g => g.Id == query.GroupId);
+
             var milestones = _context.Milestones
                 .Where(m => m.StudentGroup.Id == query.GroupId)
                 .OrderBy(m => m.LearningOutcome)
@@ -56,11 +57,19 @@ namespace StudentProgress.Core.UseCases
                 .ThenInclude(m => m.Milestone)
                 .FirstOrDefaultAsync(p => p.Id == (query.Id ?? 0));
 
+            var studentMilestoneProgresses = await _context.MilestoneProgresses
+                .Include(mp => mp.Milestone)
+                .Where(mp =>
+                    mp.ProgressUpdate.StudentId == query.StudentId && mp.Milestone.StudentGroup.Id == query.GroupId)
+                .OrderByDescending(mp => mp.ProgressUpdate.Date)
+                .ToListAsync();
+
             if (student == null || group == null || (query.Id != null && progressUpdate == null))
             {
                 return Result.Failure<Response>(
                     "Either group and/or student doesn't exist, or you're trying to access a non-existing progress update");
             }
+
 
             var command = new ProgressCreateOrUpdate.Command
             {
@@ -72,11 +81,16 @@ namespace StudentProgress.Core.UseCases
                 Feeling = progressUpdate?.ProgressFeeling ?? Feeling.Neutral,
                 Milestones = milestones.Select(milestone =>
                     {
+                        var milestoneProgresses =
+                            studentMilestoneProgresses.Where(mp => mp.Milestone.Id == milestone.Id && mp.CreatedDate < (progressUpdate?.CreatedDate ?? DateTime.Now)).ToList();
+                        var latestProgress = milestoneProgresses.FirstOrDefault();
+
                         var milestoneProgress =
                             progressUpdate?.MilestonesProgress.FirstOrDefault(pu => milestone.Id == pu.Milestone.Id);
                         return new ProgressCreateOrUpdate.MilestoneProgressCommand
                         {
                             Rating = milestoneProgress?.Rating,
+                            PreviousRating = latestProgress?.Rating,
                             Comment = milestoneProgress?.Comment,
                             MilestoneId = milestone.Id,
                             Id = milestoneProgress?.Id

@@ -23,6 +23,7 @@ namespace StudentProgress.Core.UseCases
     {
       public int? Id { get; set; }
       public int MilestoneId { get; set; }
+      public Rating? PreviousRating { get; set; }
       public Rating? Rating { get; set; }
       public string? Comment { get; set; }
     }

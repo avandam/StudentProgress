@@ -48,6 +48,8 @@ namespace StudentProgress.Core.UseCases
             public string GroupName { get; set; }
             public string StudentName { get; set; }
             public string? StudentNote { get; set; }
+            public string? StudentNoteInGroup { get; set; }
+            public StatusInGroup StudentStatusInGroup { get; set; }
             public Period Period { get; set; }
             public string? LastFeedback { get; }
             public DateTime? LastFeedbackDate { get; }
@@ -58,7 +60,8 @@ namespace StudentProgress.Core.UseCases
             public Response(int groupId, int studentId, string groupName, string studentName, string? studentNote,
                 Period period,
                 IEnumerable<MilestoneResponse> milestones, IEnumerable<ProgressUpdateResponse> progressUpdates,
-                IEnumerable<OtherStudentResponse> otherStudents, string? lastFeedback, DateTime? lastFeedbackDate)
+                IEnumerable<OtherStudentResponse> otherStudents, string? lastFeedback, DateTime? lastFeedbackDate,
+                string? studentNoteInGroup, StatusInGroup studentStatusInGroup)
             {
                 GroupId = groupId;
                 StudentId = studentId;
@@ -71,6 +74,8 @@ namespace StudentProgress.Core.UseCases
                 OtherStudents = otherStudents;
                 LastFeedback = lastFeedback;
                 LastFeedbackDate = lastFeedbackDate;
+                StudentNoteInGroup = studentNoteInGroup;
+                StudentStatusInGroup = studentStatusInGroup;
             }
         }
 
@@ -110,6 +115,11 @@ namespace StudentProgress.Core.UseCases
                 .OrderByDescending(p => p.Date)
                 .FirstOrDefault();
 
+            var studentStatuses = await _context.StudentStatuses
+                .Where(u => u.GroupId == query.GroupId && u.StudentId == query.StudentId)
+                .ToListAsync();
+            var studentStatus = studentStatuses.FirstOrDefault();
+
             var milestonesSummary = milestones.Select(milestone =>
                 {
                     var milestoneProgresses =
@@ -146,7 +156,10 @@ namespace StudentProgress.Core.UseCases
                 period: group.Value.Period,
                 otherStudents: otherStudents,
                 lastFeedback: lastProgressUpdate?.Feedback,
-                lastFeedbackDate: lastProgressUpdate?.Date
+                lastFeedbackDate: lastProgressUpdate?.Date,
+                studentNoteInGroup: studentStatus?.Note,
+                studentStatusInGroup: studentStatus != null ? studentStatus.StatusInGroup : StatusInGroup.Active
+
             ));
         }
     }

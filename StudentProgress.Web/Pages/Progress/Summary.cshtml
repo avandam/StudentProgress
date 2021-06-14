@@ -25,30 +25,37 @@
 </a> >
 <span>Summary</span>
 
-<h1>@Model.Summary.StudentName</h1>
+<h1>@(Model.Summary.StudentName) (@Model.Summary.StudentStatusInGroup)</h1>
 <a class="me-3" asp-page="./CreateEdit" asp-route-studentId="@Model.Summary.StudentId" asp-route-groupId="@Model.Summary.GroupId">Add progress</a>
 <a class="me-3" asp-page="./Index" asp-route-studentId="@Model.Summary.StudentId" asp-route-groupId="@Model.Summary.GroupId">View conversations</a>
 
 <section class="row">
 
   <section class="col-sm-12 col-md-10">
-    <section x-data="studentInfoController()" class="mt-4">
-      <h2>
-        Notes
-      </h2>
-      <p x-show="!isEditing" x-on:click="startEditing" class="student-note">
-        <input type="hidden" x-ref="originalNote" value="@Model.Summary.StudentNote"/>
-        <span class="feedback-text" x-ref="displayNote">@(Model.Summary.StudentNote ?? $"Add a note for {Model.Summary.StudentName} here")</span>
-      </p>
-      <form x-ref="form" x-show="isEditing" x-on:submit="save" autocomplete="off">
-        <input type="hidden" name="id" value="@Model.Summary.StudentId"/>
-        <div class="form-floating mb-3">
-          <textarea x-ref="noteInput" id="note" name="note" type="text" class="form-control" x-on:keydown.escape="cancelEditing">@Model.Summary.StudentNote</textarea>
-          <label for="note">Student Note</label>
-        </div>
-        <button type="submit" class="btn btn-outline-primary">Save</button>
-      </form>
-    </section>
+      <section x-data="studentInfoController()" class="mt-4">
+          <h2>
+              Student Notes
+          </h2>
+          <p x-show="!isEditing" x-on:click="startEditing" class="student-note">
+              <input type="hidden" x-ref="originalNote" value="@Model.Summary.StudentNote"/>
+              <span class="feedback-text" x-ref="displayNote">@(Model.Summary.StudentNote ?? $"Add a generic note for {Model.Summary.StudentName} here")</span>
+          </p>
+          <form x-ref="form" x-show="isEditing" x-on:submit="save" autocomplete="off">
+              <input type="hidden" name="id" value="@Model.Summary.StudentId"/>
+              <div class="form-floating mb-3">
+                  <textarea x-ref="noteInput" id="note" name="note" type="text" class="form-control" x-on:keydown.escape="cancelEditing">@Model.Summary.StudentNote</textarea>
+                  <label for="note">Student Note</label>
+              </div>
+              <button type="submit" class="btn btn-outline-primary">Save</button>
+          </form>
+      </section>
+      
+      <section>
+          <h2>
+              Notes for student in this group
+          </h2>
+          <p class="feedback-text">@(Model.Summary.StudentNoteInGroup ?? $"No group specific note given for {Model.Summary.StudentName}")</p>
+      </section>
 
     @if (Model.Summary.LastFeedback.HasValue())
     {

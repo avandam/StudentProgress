@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using StudentProgress.Core.Extensions;
 
 namespace StudentProgress.Core.Entities
@@ -19,6 +20,7 @@ namespace StudentProgress.Core.Entities
         public DbSet<Milestone> Milestones => Set<Milestone>();
         public DbSet<MilestoneProgress> MilestoneProgresses => Set<MilestoneProgress>();
         public DbSet<ProgressTag> ProgressTags => Set<ProgressTag>();
+        public DbSet<StudentStatus> StudentStatuses => Set<StudentStatus>();
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
@@ -82,6 +84,14 @@ namespace StudentProgress.Core.Entities
                 e.ToTable("ProgressTag");
                 e.HasKey(p => p.Id);
                 e.Property(p => p.Name).HasConversion(p => p.Value, p => Name.Create(p).Value);
+            });
+
+            modelBuilder.Entity<StudentStatus>(e =>
+            {
+                e.ToTable("StudentStatus");
+                e.HasKey(p => p.Id);
+                e.HasOne(p => p.Student).WithMany(s => s.StudentStatuses);
+                e.HasOne(p => p.Group).WithMany();
             });
         }
     }

@@ -15,7 +15,7 @@
 <a asp-page="/StudentGroups/Details/Index" asp-route-id="@Model.Student.GroupId">@Model.Student.GroupName</a> >
 <span>@Model.Student.Name</span>
 
-<h1>@Model.Student.Name</h1>
+<h1>@(Model.Student.Name) (@Model.Student.StatusInGroup)</h1>
 
 <section class="d-flex">
 <a class="me-3" asp-page="./CreateEdit" asp-route-studentId="@Model.Student.StudentId" asp-route-groupId="@Model.Student.GroupId">Add progress</a>

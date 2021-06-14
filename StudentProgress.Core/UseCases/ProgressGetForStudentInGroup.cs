@@ -19,6 +19,7 @@ namespace StudentProgress.Core.UseCases
             public string? Name { get; init; }
             public string? GroupName { get; init; }
             public IEnumerable<ProgressUpdateResponse> ProgressUpdates { get; init; }
+            public StatusInGroup StatusInGroup { get; init; }
 
             public Response()
             {
@@ -75,12 +76,19 @@ namespace StudentProgress.Core.UseCases
                 .Where(p => p.GroupId == request.GroupId)
                 .OrderByDescending(p => p.Date);
 
+            var studentStatuses = await _context.StudentStatuses
+                .Where(u => u.GroupId == request.GroupId && u.StudentId == request.StudentId)
+                .ToListAsync();
+            var studentStatus = studentStatuses.Count > 0 ? studentStatuses.First().StatusInGroup : StatusInGroup.Active;
+            
+
             return new Response
             {
                 GroupId = group.Id,
                 StudentId = student.Id,
                 Name = student.Name,
                 GroupName = group.Name,
+                StatusInGroup = studentStatus,
                 ProgressUpdates = progressForGroup.Select(p => new Response.ProgressUpdateResponse
                 {
                     Id = p.Id,

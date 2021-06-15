@@ -34,6 +34,7 @@ namespace StudentProgress.Core.UseCases
       [Required] public int StudentId { get; set; }
       [Required] public int GroupId { get; set; }
       [Required] public Feeling Feeling { get; set; }
+      [Required] public StatusInGroup StatusInGroup { get; set; }
       public DateTime Date { get; set; }
 
       [Required]
@@ -91,6 +92,22 @@ namespace StudentProgress.Core.UseCases
 
         progressUpdate.Update(command.Feeling, command.Date, command.Feedback);
         UpdateMilestoneProgresses(progressUpdate, milestonesProgress.Value);
+      }
+
+      var studentStatuses = await _context.StudentStatuses
+          .Where(u => u.GroupId == group.Value.Id && u.StudentId == student.Value.Id)
+          .ToListAsync();
+
+      StudentStatus studentStatus;
+      if (studentStatuses.Count > 0)
+      {
+          studentStatus = studentStatuses.First();
+          studentStatus.Update(studentStatus.Note, command.StatusInGroup);
+      }
+      else
+      {
+          studentStatus = new StudentStatus(student.Value, group.Value, null, command.StatusInGroup);
+          await _context.StudentStatuses.AddAsync(studentStatus);
       }
 
       await _context.SaveChangesAsync();

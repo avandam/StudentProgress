@@ -17,7 +17,7 @@
   <span>@(Model.Progress.Id == null ? "Add" : "Edit") progress</span>
 </section>
 
-<h1>@Model.Student.Name (@Model.StatusInGroup)</h1>
+<h1>@Model.Student.Name (@Model.Progress.StatusInGroup)</h1>
 <div asp-validation-summary="All"></div>
 <h2>@(Model.Progress.Id == null ? "New" : "Update") Progress</h2>
 
@@ -29,6 +29,7 @@
         <nav class="nav nav-pills flex-column">
             <a class="nav-link" href="#studentname">@Model.Student.Name</a>
             <a class="nav-link" href="#date">Date</a>
+            <a class="nav-link" href="#student-status-in-group">Status</a>
             <a class="nav-link" href="#feeling">Feeling</a>
             <a class="nav-link" href="#feedback">Feedback</a>
             @if (Model.Milestones.Any())
@@ -64,6 +65,16 @@
           </div>
       </section>
       
+      <section id="studentStatus" class="row col-xl-6">
+          <h3>Status</h3>
+          <p class="form-group">
+              @*<label asp-for="Progress.StatusInGroup"></label>*@
+              <select class="form-control" asp-for="Progress.StatusInGroup"
+                      asp-items="@Html.GetEnumSelectList<StatusInGroup>()">
+              </select>
+          </p>
+      </section>
+
       <section id="feeling" class="row col-xl-6">
           <h3>Feeling</h3>
           <p class="form-group">

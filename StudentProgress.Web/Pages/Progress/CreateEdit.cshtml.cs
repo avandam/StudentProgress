@@ -20,7 +20,6 @@ namespace StudentProgress.Web.Pages.Progress
         public ProgressGetForCreateOrUpdate.Response GetResponse { get; set; }
         public Student Student => GetResponse.Student;
         public StudentGroup Group => GetResponse.Group;
-        public StatusInGroup StatusInGroup => GetResponse.StatusInGroup;
         public List<Milestone> Milestones => GetResponse.Milestones;
         public Dictionary<string, string> MilestoneNavIds => Milestones
                 .Select(m => m.LearningOutcome)

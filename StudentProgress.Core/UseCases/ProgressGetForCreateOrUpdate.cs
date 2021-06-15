@@ -24,16 +24,14 @@ namespace StudentProgress.Core.UseCases
             public StudentGroup Group { get; set; }
             public List<Milestone> Milestones { get; set; }
             public ProgressCreateOrUpdate.Command Command { get; set; }
-            public StatusInGroup StatusInGroup { get; set; }
 
             public Response(Student student, StudentGroup group, List<Milestone> milestones,
-                ProgressCreateOrUpdate.Command command, StatusInGroup statusInGroup)
+                ProgressCreateOrUpdate.Command command)
             {
                 Student = student;
                 Group = group;
                 Milestones = milestones;
                 Command = command;
-                StatusInGroup = statusInGroup;
             }
         }
 
@@ -86,6 +84,7 @@ namespace StudentProgress.Core.UseCases
                 StudentId = student.Id,
                 Id = progressUpdate?.Id,
                 Feeling = progressUpdate?.ProgressFeeling ?? Feeling.Neutral,
+                StatusInGroup = studentStatus,
                 Milestones = milestones.Select(milestone =>
                     {
                         var milestoneProgresses =
@@ -106,7 +105,7 @@ namespace StudentProgress.Core.UseCases
                     .ToList()
             };
 
-            return Result.Success(new Response(student!, group!, milestones, command, studentStatus));
+            return Result.Success(new Response(student!, group!, milestones, command));
         }
     }
 }

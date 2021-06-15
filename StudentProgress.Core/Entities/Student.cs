@@ -11,7 +11,9 @@ namespace StudentProgress.Core.Entities
         public string Name { get; private set; }
         public IEnumerable<ProgressUpdate> ProgressUpdates { get; private set; }
         public IEnumerable<StudentGroup> StudentGroups { get; private set; }
-        public IEnumerable<StudentStatus> StudentStatuses { get; private set; }
+        private readonly List<StudentStatus> studentStatuses;
+        public IEnumerable<StudentStatus> StudentStatuses => studentStatuses;
+
         public string? Note { get; private set; }
 
 #nullable disable
@@ -23,13 +25,19 @@ namespace StudentProgress.Core.Entities
             Name = name ?? throw new NullReferenceException(nameof(name));
             ProgressUpdates = new List<ProgressUpdate>();
             StudentGroups = new List<StudentGroup>();
-            StudentStatuses = new List<StudentStatus>();
+            studentStatuses = new List<StudentStatus>();
         }
 
         public Result Update(string? name, string? note)
         {
             Name = name ?? Name;
             Note = note;
+            return Result.Success();
+        }
+
+        public Result AddStudentStatus(StudentGroup group)
+        {
+            studentStatuses.Add(new StudentStatus(this, group, null, StatusInGroup.Active));
             return Result.Success();
         }
     }

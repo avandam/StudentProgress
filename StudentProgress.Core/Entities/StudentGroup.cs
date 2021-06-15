@@ -45,6 +45,7 @@ namespace StudentProgress.Core.Entities
                 return Result.Failure("Student is already added to this group");
             
             students.Add(student ?? throw new NullReferenceException(nameof(student)));
+            student.AddStudentStatus(this);
             return Result.Success();
         }
 

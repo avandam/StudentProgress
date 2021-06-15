@@ -24,14 +24,16 @@ namespace StudentProgress.Core.UseCases
             public StudentGroup Group { get; set; }
             public List<Milestone> Milestones { get; set; }
             public ProgressCreateOrUpdate.Command Command { get; set; }
+            public StatusInGroup StatusInGroup { get; set; }
 
             public Response(Student student, StudentGroup group, List<Milestone> milestones,
-                ProgressCreateOrUpdate.Command command)
+                ProgressCreateOrUpdate.Command command, StatusInGroup statusInGroup)
             {
                 Student = student;
                 Group = group;
                 Milestones = milestones;
                 Command = command;
+                StatusInGroup = statusInGroup;
             }
         }
 
@@ -63,6 +65,11 @@ namespace StudentProgress.Core.UseCases
                     mp.ProgressUpdate.StudentId == query.StudentId && mp.Milestone.StudentGroup.Id == query.GroupId)
                 .OrderByDescending(mp => mp.ProgressUpdate.Date)
                 .ToListAsync();
+
+            var studentStatuses = await _context.StudentStatuses
+                .Where(u => u.GroupId == query.GroupId && u.StudentId == query.StudentId)
+                .ToListAsync();
+            var studentStatus = studentStatuses.Count > 0 ? studentStatuses.First().StatusInGroup : StatusInGroup.Active;
 
             if (student == null || group == null || (query.Id != null && progressUpdate == null))
             {
@@ -99,7 +106,7 @@ namespace StudentProgress.Core.UseCases
                     .ToList()
             };
 
-            return Result.Success(new Response(student!, group!, milestones, command));
+            return Result.Success(new Response(student!, group!, milestones, command, studentStatus));
         }
     }
 }

@@ -17,7 +17,7 @@
   <span>@(Model.Progress.Id == null ? "Add" : "Edit") progress</span>
 </section>
 
-<h1>@Model.Student.Name</h1>
+<h1>@Model.Student.Name (@Model.StatusInGroup)</h1>
 <div asp-validation-summary="All"></div>
 <h2>@(Model.Progress.Id == null ? "New" : "Update") Progress</h2>
 

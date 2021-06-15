@@ -50,12 +50,12 @@
           </form>
       </section>
       
-      <section>
+      @*<section>
           <h2>
               Notes for student in this group
           </h2>
           <p class="feedback-text">@(Model.Summary.StudentNoteInGroup ?? $"No group specific note given for {Model.Summary.StudentName}")</p>
-      </section>
+      </section>*@
 
     @if (Model.Summary.LastFeedback.HasValue())
     {

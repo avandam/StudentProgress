@@ -59,6 +59,10 @@ namespace StudentProgress.Core.UseCases
                 [Display(Name = "Last Feedback")] public string? LastFeedback { get; }
 
                 public IList<ProgressUpdateResponse> ProgressUpdates { get; set; } = new List<ProgressUpdateResponse>();
+
+                [Display(Name = "Status")]
+                [DisplayFormat(NullDisplayText = "Unknown")]
+                public StatusInGroup? StatusInGroup { get; }
             }
         }
 
@@ -101,6 +105,7 @@ SELECT
     g.""UpdatedDate"" as ""{nameof(Response.UpdatedAt)}"",
     s.""Id"",
     s.""Name"",
+    ss.""StatusInGroup"" as ""{nameof(Response.StudentsResponse.StatusInGroup)}"",
     p.""Date"" as ""{nameof(Response.StudentsResponse.LastUpdateDate)}"",
     p.""ProgressFeeling"" as ""{nameof(Response.StudentsResponse.FeelingOfLatestProgress)}"",
     p.""Feedback"" as ""{nameof(Response.StudentsResponse.LastFeedback)}"",
@@ -113,6 +118,7 @@ SELECT
 FROM ""StudentGroup"" g
 LEFT JOIN ""StudentStudentGroup"" gs ON g.""Id"" = gs.""StudentGroupsId""
 LEFT JOIN ""Student"" s ON s.""Id"" = gs.""StudentsId""
+LEFT JOIN ""StudentStatus"" ss ON ss.""GroupId"" = g.""Id"" AND ss.""StudentId"" = s.""Id""
 LEFT JOIN ""ProgressUpdate"" p ON p.""GroupId"" = g.""Id"" AND p.""StudentId"" = s.""Id""
 LEFT JOIN
 		(select 

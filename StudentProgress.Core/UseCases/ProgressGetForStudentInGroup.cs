@@ -51,6 +51,7 @@ namespace StudentProgress.Core.UseCases
                 [DataType(DataType.Date)]
                 public DateTime Date { get; init; }
                 public Feeling Feeling { get; init; }
+                public ProgressStatus ProgressStatus { get; init; }
                 public IEnumerable<MilestoneProgressResponse> MilestoneProgresses { get; init; } = Enumerable.Empty<MilestoneProgressResponse>();
             }
         }
@@ -94,6 +95,7 @@ namespace StudentProgress.Core.UseCases
                     Id = p.Id,
                     Feedback = p.Feedback,
                     Feeling = p.ProgressFeeling,
+                    ProgressStatus = p.ProgressStatus,
                     Date = p.Date,
                     UpdatedAt = p.UpdatedDate,
                     CreatedAt = p.CreatedDate,

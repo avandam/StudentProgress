@@ -35,6 +35,7 @@ namespace StudentProgress.Core.UseCases
       [Required] public int GroupId { get; set; }
       [Required] public Feeling Feeling { get; set; }
       [Required] public StatusInGroup StatusInGroup { get; set; }
+      [Required] public ProgressStatus ProgressStatus { get; set; }
       public DateTime Date { get; set; }
 
       [Required]
@@ -78,7 +79,8 @@ namespace StudentProgress.Core.UseCases
             group.Value,
             command.Feedback,
             command.Feeling,
-            command.Date);
+            command.Date,
+            command.ProgressStatus);
         progressUpdate.AddMilestones(milestonesProgress.Value);
         await _context.ProgressUpdates.AddAsync(progressUpdate);
       }
@@ -90,7 +92,7 @@ namespace StudentProgress.Core.UseCases
             .ThenInclude(mp => mp.Milestone)
             .FirstOrDefaultAsync(p => p.Id == command.Id);
 
-        progressUpdate.Update(command.Feeling, command.Date, command.Feedback);
+        progressUpdate.Update(command.Feeling, command.Date, command.Feedback, command.ProgressStatus);
         UpdateMilestoneProgresses(progressUpdate, milestonesProgress.Value);
       }
 

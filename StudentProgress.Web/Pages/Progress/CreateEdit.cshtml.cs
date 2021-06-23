@@ -45,6 +45,10 @@ namespace StudentProgress.Web.Pages.Progress
 
             GetResponse = getResult.Value;
             Progress = getResult.Value.Command;
+            if (Progress.ProgressStatus == ProgressStatus.Grading)
+            {
+                Progress.StatusInGroup = StatusInGroup.Graded;
+            }
 
             return Page();
         }

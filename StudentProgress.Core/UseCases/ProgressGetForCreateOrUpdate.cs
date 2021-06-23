@@ -16,6 +16,7 @@ namespace StudentProgress.Core.UseCases
             public int? Id { get; set; }
             public int GroupId { get; set; }
             public int StudentId { get; set; }
+            public int? StatusId { get; set; }
         }
 
         public record Response
@@ -85,7 +86,7 @@ namespace StudentProgress.Core.UseCases
                 Id = progressUpdate?.Id,
                 Feeling = progressUpdate?.ProgressFeeling ?? Feeling.Neutral,
                 StatusInGroup = studentStatus,
-                ProgressStatus = progressUpdate?.ProgressStatus ?? ProgressStatus.FeedbackConversation,
+                ProgressStatus = progressUpdate?.ProgressStatus ?? (query.StatusId != null ? (ProgressStatus)query.StatusId : ProgressStatus.FeedbackConversation),
                 Milestones = milestones.Select(milestone =>
                     {
                         var milestoneProgresses =

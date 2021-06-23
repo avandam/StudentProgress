@@ -157,7 +157,7 @@ namespace StudentProgress.Core.UseCases
                 otherStudents: otherStudents,
                 lastFeedback: lastProgressUpdate?.Feedback,
                 lastFeedbackDate: lastProgressUpdate?.Date,
-                lastProgressStatus: lastProgressUpdate.ProgressStatus,
+                lastProgressStatus: lastProgressUpdate?.ProgressStatus,
                 studentStatusInGroup: studentStatus != null ? studentStatus.StatusInGroup : StatusInGroup.Active
 
             ));

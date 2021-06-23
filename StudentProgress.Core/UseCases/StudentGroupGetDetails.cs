@@ -50,23 +50,63 @@ namespace StudentProgress.Core.UseCases
                 public int Id { get; }
                 public string Name { get; } = null!;
                 [Display(Name = "#")] public int AmountOfProgressItems { get; }
-                [Display(Name = "Latest Feeling")] public Feeling? FeelingOfLatestProgress { get; }
+                [Display(Name = "Last Feeling")] public Feeling? FeelingOfLatestProgress { get; }
 
                 [Display(Name = "Last Time")]
                 [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd HH:mm}")]
                 public DateTime? LastUpdateDate { get; }
 
-                [Display(Name = "Last Feedback")] public string? LastFeedback { get; }
+                [Display(Name = "Last Feedback")] 
+                public string? LastFeedback { get; }
+
+                [Display(Name = "Last Feedback")]
+                public string LastFeedbackFormatted
+                {
+                    get
+                    {
+                        if (LastFeedback == null)
+                        {
+                            return String.Empty;
+                        }
+
+                        if (LastFeedback.Length > 50)
+                        {
+                            return LastFeedback.Substring(0, 50) + " (...)";
+                        }
+
+                        return LastFeedback;
+                    }
+                }
+
+                [Display(Name = "Last Type")]
+                public ProgressStatus? LastProgressStatus { get; }
 
                 public IList<ProgressUpdateResponse> ProgressUpdates { get; set; } = new List<ProgressUpdateResponse>();
 
                 [Display(Name = "Status")]
                 [DisplayFormat(NullDisplayText = "Unknown")]
                 public StatusInGroup? StatusInGroup { get; }
+
+                [Display(Name = "Date Last Spoken")]
+                [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", NullDisplayText = "Never")]
+                public DateTime? LastSpokenWithStudentDate
+                {
+                    get
+                    {
+                        if (ProgressUpdates.All(update => update.ProgressStatus != ProgressStatus.FeedbackConversation))
+                        {
+                            return null;
+                            
+                        }
+                        return ProgressUpdates
+                            .Where(update => update.ProgressStatus == ProgressStatus.FeedbackConversation)
+                            .Max(update => update.Date).Date;
+                    }
+                }
             }
         }
 
-        public record ProgressUpdateResponse(int Id, DateTime Date, Feeling Feeling, int StudentId, int GroupId);
+        public record ProgressUpdateResponse(int Id, DateTime Date, Feeling Feeling, int StudentId, int GroupId, ProgressStatus ProgressStatus);
 
         public async Task<Response?> HandleAsync(Request request)
         {
@@ -109,6 +149,7 @@ SELECT
     p.""Date"" as ""{nameof(Response.StudentsResponse.LastUpdateDate)}"",
     p.""ProgressFeeling"" as ""{nameof(Response.StudentsResponse.FeelingOfLatestProgress)}"",
     p.""Feedback"" as ""{nameof(Response.StudentsResponse.LastFeedback)}"",
+    p.""ProgressStatus"" as ""{nameof(Response.StudentsResponse.LastProgressStatus)}"",
     p2.""AmountOfProgressItems"" as ""{nameof(Response.StudentsResponse.AmountOfProgressItems)}"",
 	p.""Date"",
 	p2.""Date"",
@@ -172,7 +213,7 @@ ORDER BY s.""Name"", p.""Date"" DESC, m.""LearningOutcome"", m.""Artefact"";
             var studentIds = group.Students.Select(s => s.Id).ToList();
             var progressUpdates = await _context.ProgressUpdates
                     .Where(p => studentIds.Contains(p.StudentId) && p.GroupId == group.Id)
-                    .Select(p => new ProgressUpdateResponse(p.Id, p.Date, p.ProgressFeeling, p.StudentId, p.GroupId))
+                    .Select(p => new ProgressUpdateResponse(p.Id, p.Date, p.ProgressFeeling, p.StudentId, p.GroupId, p.ProgressStatus))
                     .ToListAsync();
             return group.Students.Select(s => s with
             {

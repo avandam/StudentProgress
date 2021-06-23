@@ -21,6 +21,7 @@ namespace StudentProgress.Web.Pages.StudentGroups.Details
         }
 
         public bool IsSortedOnLastFeedback { get; set; }
+        public bool IsSortedOnLastSpoken { get; set; }
         public StudentGroupGetDetails.Response StudentGroup { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id, string? sort)
@@ -40,12 +41,21 @@ namespace StudentProgress.Web.Pages.StudentGroups.Details
             if (sort == "last-feedback")
             {
                 IsSortedOnLastFeedback = true;
+                IsSortedOnLastSpoken = false;
                 StudentGroup.Students = StudentGroup.Students
                     .OrderByDescending(s => s.ProgressUpdates
                         .Select(u => u.Date)
                         .DefaultIfEmpty(DateTime.MinValue)
                         .Max(p => p.Date))
                     .ToList();
+            }
+
+            if (sort == "last-spoken")
+            {
+                IsSortedOnLastSpoken = true;
+                IsSortedOnLastFeedback = false;
+                StudentGroup.Students =
+                    StudentGroup.Students.OrderByDescending(s => s.StatusInGroup != StatusInGroup.Stopped && s.StatusInGroup != StatusInGroup.Inactive).ThenBy(s => s.LastSpokenWithStudentDate).ToList();
             }
             return Page();
         }

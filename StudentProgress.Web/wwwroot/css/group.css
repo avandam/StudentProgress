@@ -11,6 +11,15 @@
     min-width: 150px;
 }
 
+.student-status .last-spoken-date .last-progress-status {
+    min-width: 100px;
+}
+
+.last-progress-feeling {
+    min-width: 50px;
+    text-align: center;
+}
+
 .name-edit {
     visibility: hidden;
     cursor: pointer;

@@ -42,8 +42,19 @@
             <section id="feedback-@progressUpdate.Id" class="card mb-3">
                 <h4 class="card-header d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center">
-                        <div style="display: inline-block; width:25px; height: 25px" class="rounded-circle @ProgressUpdateUIHelper.ToFeelingBackgroundColor(progressUpdate.Feeling) me-3"></div>
-                        @(progressUpdate.ProgressStatus.GetDisplayName()) @progressUpdate.Date.ToString("yyyy-MM-dd HH:mm")
+                        @switch (progressUpdate.Feeling)
+                                  {
+                                      case Feeling.Bad:
+                                          <svg-inject src="lib/bootstrap-icons/smile_sad.svg"></svg-inject>
+                                          break;
+                                      case Feeling.Neutral:
+                                          <svg-inject src="lib/bootstrap-icons/smile_neutral.svg"></svg-inject>
+                                          break;
+                                      case Feeling.Good:
+                                          <svg-inject src="lib/bootstrap-icons/smile_happy.svg"></svg-inject>
+                                          break;
+                                  }
+                        &nbsp; @(progressUpdate.ProgressStatus.GetDisplayName()) @progressUpdate.Date.ToString("yyyy-MM-dd HH:mm")
                     </div>
                     <a class="btn btn-link" asp-page="./CreateEdit" asp-route-groupId="@Model.Student.GroupId" asp-route-studentId="@Model.Student.StudentId" asp-route-id="@progressUpdate.Id">Edit</a>
                 </h4>

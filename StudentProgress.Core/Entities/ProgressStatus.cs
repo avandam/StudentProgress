@@ -17,7 +17,9 @@ namespace StudentProgress.Core.Entities
         [Display(Name = "Discussion with other teacher")]
         Intervision = 6,            // Note by the teacher, resulting fro discussion with other teacher(s)
         [Display(Name = "Other")]
-        Other = 7                   // None of the above
+        Other = 7,                  // None of the above
+        [Display(Name = "Unknown")]
+        Unknown = 0               // Unknown, only for backwards compatibility, will not be used in new statusses
 
     }
 }

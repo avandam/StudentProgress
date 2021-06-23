@@ -2,6 +2,7 @@
 @model StudentProgress.Web.Pages.Progress.SummaryModel
 @using Core.Entities
 @using StackExchange.Profiling.Internal
+@using StudentProgress.Core.Extensions
 
 @{
   ViewData["Title"] = $"{Model.Summary.StudentName} - {Model.Summary.GroupName} - Summary";
@@ -54,7 +55,7 @@
     {
       <section>
         <h2>Last feedback</h2>
-        <small class="text-muted">@Model.Summary.LastFeedbackDate</small>
+        <small class="text-muted"> @Model.Summary.LastFeedbackDate (@Model.Summary.LastProgressStatus?.GetDisplayName())</small>
         <p class="feedback-text">@Model.Summary.LastFeedback</p>
       </section>
     }

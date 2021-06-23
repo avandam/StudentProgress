@@ -102,11 +102,11 @@ namespace StudentProgress.Core.UseCases
       if (studentStatuses.Count > 0)
       {
           studentStatus = studentStatuses.First();
-          studentStatus.Update(studentStatus.Note, command.StatusInGroup);
+          studentStatus.Update(command.StatusInGroup);
       }
       else
       {
-          studentStatus = new StudentStatus(student.Value, group.Value, null, command.StatusInGroup);
+          studentStatus = new StudentStatus(student.Value, group.Value, command.StatusInGroup);
           await _context.StudentStatuses.AddAsync(studentStatus);
       }
 

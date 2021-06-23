@@ -37,7 +37,7 @@ namespace StudentProgress.Core.Entities
 
         public Result AddStudentStatus(StudentGroup group)
         {
-            studentStatuses.Add(new StudentStatus(this, group, null, StatusInGroup.Active));
+            studentStatuses.Add(new StudentStatus(this, group, StatusInGroup.Active));
             return Result.Success();
         }
     }

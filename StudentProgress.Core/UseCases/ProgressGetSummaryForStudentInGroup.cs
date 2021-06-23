@@ -48,7 +48,6 @@ namespace StudentProgress.Core.UseCases
             public string GroupName { get; set; }
             public string StudentName { get; set; }
             public string? StudentNote { get; set; }
-            public string? StudentNoteInGroup { get; set; }
             public StatusInGroup StudentStatusInGroup { get; set; }
             public Period Period { get; set; }
             public string? LastFeedback { get; }
@@ -61,7 +60,7 @@ namespace StudentProgress.Core.UseCases
                 Period period,
                 IEnumerable<MilestoneResponse> milestones, IEnumerable<ProgressUpdateResponse> progressUpdates,
                 IEnumerable<OtherStudentResponse> otherStudents, string? lastFeedback, DateTime? lastFeedbackDate,
-                string? studentNoteInGroup, StatusInGroup studentStatusInGroup)
+                StatusInGroup studentStatusInGroup)
             {
                 GroupId = groupId;
                 StudentId = studentId;
@@ -74,7 +73,6 @@ namespace StudentProgress.Core.UseCases
                 OtherStudents = otherStudents;
                 LastFeedback = lastFeedback;
                 LastFeedbackDate = lastFeedbackDate;
-                StudentNoteInGroup = studentNoteInGroup;
                 StudentStatusInGroup = studentStatusInGroup;
             }
         }
@@ -157,7 +155,6 @@ namespace StudentProgress.Core.UseCases
                 otherStudents: otherStudents,
                 lastFeedback: lastProgressUpdate?.Feedback,
                 lastFeedbackDate: lastProgressUpdate?.Date,
-                studentNoteInGroup: studentStatus?.Note,
                 studentStatusInGroup: studentStatus != null ? studentStatus.StatusInGroup : StatusInGroup.Active
 
             ));

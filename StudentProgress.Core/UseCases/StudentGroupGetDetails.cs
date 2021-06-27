@@ -28,7 +28,7 @@ namespace StudentProgress.Core.UseCases
         {
             public int Id { get; init; }
             public string Name { get; init; } = null!;
-            public string? Mnemonic { get; init; }
+            [Display(Name = "Description")] public string? Mnemonic { get; init; }
             [Display(Name = "Created On")] public DateTime CreatedAt { get; init; }
             [Display(Name = "Last name change")] public DateTime UpdatedAt { get; init; }
             public IList<StudentsResponse> Students { get; set; } = new List<StudentsResponse>();

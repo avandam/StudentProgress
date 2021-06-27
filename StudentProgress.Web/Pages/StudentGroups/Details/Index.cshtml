@@ -41,12 +41,6 @@
 
       <dl class="row">
         <dt class="col-sm-2">
-          @Html.DisplayNameFor(model => model.StudentGroup.Name)
-        </dt>
-        <dd class="col-sm-10">
-          @Html.DisplayFor(model => model.StudentGroup.Name)
-        </dd>
-        <dt class="col-sm-2">
           @Html.DisplayNameFor(model => model.StudentGroup.Mnemonic)
         </dt>
         <dd class="col-sm-10">
@@ -57,12 +51,6 @@
         </dt>
         <dd class="col-sm-10">
           @Html.DisplayFor(model => model.StudentGroup.CreatedAt)
-        </dd>
-        <dt class="col-sm-2">
-          @Html.DisplayNameFor(model => model.StudentGroup.UpdatedAt)
-        </dt>
-        <dd class="col-sm-10">
-          @Html.DisplayFor(model => model.StudentGroup.UpdatedAt)
         </dd>
       </dl>
     </section>
@@ -80,7 +68,6 @@
       else
       {
         <table class="table" x-data="initMilestoneTableActionsController()">
-          <caption>Table showing the students for this group</caption>
           <thead>
               <tr>
                   <th id="student-name">@Html.DisplayNameFor(model => model.StudentGroup.Students.FirstOrDefault().Name)</th>

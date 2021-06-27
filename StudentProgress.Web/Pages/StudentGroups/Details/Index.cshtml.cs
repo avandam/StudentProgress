@@ -13,11 +13,13 @@ namespace StudentProgress.Web.Pages.StudentGroups.Details
     {
         private readonly StudentGroupGetDetails _useCase;
         private readonly MilestonesUpdateLearningOutcome _milestonesUpdateUseCase;
+        private readonly StudentToggleWantToSpeakToTeacher _studentToggleWantToSpeakToTeacher;
 
         public IndexModel(IDbConnection connection, ProgressContext context)
         {
             _useCase = new StudentGroupGetDetails(connection, context);
             _milestonesUpdateUseCase = new MilestonesUpdateLearningOutcome(context);
+            _studentToggleWantToSpeakToTeacher = new StudentToggleWantToSpeakToTeacher(context);
         }
 
         public bool IsSortedOnLastFeedback { get; set; }
@@ -38,18 +40,6 @@ namespace StudentProgress.Web.Pages.StudentGroups.Details
                 return NotFound();
             }
 
-            if (sort == "last-feedback")
-            {
-                IsSortedOnLastFeedback = true;
-                IsSortedOnLastSpoken = false;
-                StudentGroup.Students = StudentGroup.Students
-                    .OrderByDescending(s => s.ProgressUpdates
-                        .Select(u => u.Date)
-                        .DefaultIfEmpty(DateTime.MinValue)
-                        .Max(p => p.Date))
-                    .ToList();
-            }
-
             if (sort == "last-spoken")
             {
                 IsSortedOnLastSpoken = true;
@@ -58,6 +48,19 @@ namespace StudentProgress.Web.Pages.StudentGroups.Details
                     StudentGroup.Students.OrderByDescending(s => s.StatusInGroup != StatusInGroup.Stopped && s.StatusInGroup != StatusInGroup.Inactive).ThenBy(s => s.LastSpokenWithStudentDate).ToList();
             }
             return Page();
+        }
+
+        public async Task<IActionResult> OnPostToggleWantsToSpeakToTeacherAsync(
+            StudentToggleWantToSpeakToTeacher.Command command)
+        {
+            var result = await _studentToggleWantToSpeakToTeacher.HandleAsync(command);
+
+            if (result.IsFailure)
+            {
+                ModelState.AddModelError("StudentStatusUpdate", result.Error);
+            }
+
+            return await OnGetAsync(command.GroupId, null);
         }
 
         public async Task<IActionResult> OnPostUpdateMultipleMilestonesAsync(MilestonesUpdateLearningOutcome.Command command)

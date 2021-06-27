@@ -30,12 +30,14 @@ namespace StudentProgress.Core.UseCases
 
     public record Command
     {
-      public int? Id { get; set; }
-      [Required] public int StudentId { get; set; }
-      [Required] public int GroupId { get; set; }
-      [Required] public Feeling Feeling { get; set; }
-      [Required] public StatusInGroup StatusInGroup { get; set; }
-      [Required] public ProgressStatus ProgressStatus { get; set; }
+        public int? Id { get; set; }
+        [Required] public int StudentId { get; set; }
+        [Required] public int GroupId { get; set; }
+        [Required] public Feeling Feeling { get; set; }
+        [Required] public StatusInGroup StatusInGroup { get; set; }
+        [Required] public bool WantsToSpeakToTeacher { get; set; }
+
+        [Required] public ProgressStatus ProgressStatus { get; set; }
       public DateTime Date { get; set; }
 
       [Required]
@@ -71,6 +73,7 @@ namespace StudentProgress.Core.UseCases
       if (result.IsFailure) return result;
 
       ProgressUpdate progressUpdate;
+      bool wantsToSpeakToTeacher = false;
 
       if (command.Id == null)
       {
@@ -81,6 +84,10 @@ namespace StudentProgress.Core.UseCases
             command.Feeling,
             command.Date,
             command.ProgressStatus);
+        if (command.ProgressStatus != ProgressStatus.FeedbackConversation)
+        {
+            wantsToSpeakToTeacher = true;
+        }
         progressUpdate.AddMilestones(milestonesProgress.Value);
         await _context.ProgressUpdates.AddAsync(progressUpdate);
       }
@@ -93,6 +100,7 @@ namespace StudentProgress.Core.UseCases
             .FirstOrDefaultAsync(p => p.Id == command.Id);
 
         progressUpdate.Update(command.Feeling, command.Date, command.Feedback, command.ProgressStatus);
+        wantsToSpeakToTeacher = command.WantsToSpeakToTeacher;
         UpdateMilestoneProgresses(progressUpdate, milestonesProgress.Value);
       }
 
@@ -104,11 +112,11 @@ namespace StudentProgress.Core.UseCases
       if (studentStatuses.Count > 0)
       {
           studentStatus = studentStatuses.First();
-          studentStatus.Update(command.StatusInGroup);
+          studentStatus.Update(command.StatusInGroup, wantsToSpeakToTeacher);
       }
       else
       {
-          studentStatus = new StudentStatus(student.Value, group.Value, command.StatusInGroup);
+          studentStatus = new StudentStatus(student.Value, group.Value, command.StatusInGroup, wantsToSpeakToTeacher);
           await _context.StudentStatuses.AddAsync(studentStatus);
       }
 

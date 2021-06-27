@@ -69,6 +69,7 @@ namespace StudentProgress.Core.UseCases
                 .Where(u => u.GroupId == query.GroupId && u.StudentId == query.StudentId)
                 .ToListAsync();
             var studentStatus = studentStatuses.Count > 0 ? studentStatuses.First().StatusInGroup : StatusInGroup.Active;
+            var wantsToSpeakToTeacher = studentStatuses.Count > 0 && studentStatuses.First().WantsToSpeakToTeacher;
 
             if (student == null || group == null || (query.Id != null && progressUpdate == null))
             {
@@ -87,6 +88,7 @@ namespace StudentProgress.Core.UseCases
                 Feeling = progressUpdate?.ProgressFeeling ?? Feeling.Neutral,
                 StatusInGroup = studentStatus,
                 ProgressStatus = progressUpdate?.ProgressStatus ?? (query.StatusId != null ? (ProgressStatus)query.StatusId : ProgressStatus.FeedbackConversation),
+                WantsToSpeakToTeacher = wantsToSpeakToTeacher,
                 Milestones = milestones.Select(milestone =>
                     {
                         var milestoneProgresses =

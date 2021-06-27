@@ -11,6 +11,10 @@
     min-width: 150px;
 }
 
+.student-want-to-speak {
+    min-width: 25px;
+}
+
 .student-status .last-spoken-date .last-progress-status {
     min-width: 100px;
 }

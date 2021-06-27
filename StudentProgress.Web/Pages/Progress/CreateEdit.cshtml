@@ -56,6 +56,7 @@
       <section id="date">
           <input type="hidden" asp-for="Progress.StudentId" value="@Model.Student.Id"/>
           <input type="hidden" asp-for="Progress.GroupId" value="@Model.Group.Id"/>
+          <input type="hidden" asp-for="Progress.WantsToSpeakToTeacher" value="@Model.Progress.WantsToSpeakToTeacher"/>
           <div class="form-group mb-3">
               <label asp-for="Progress.Date"></label>
               <div x-data="{ time: new Date().toLocaleTimeString(undefined, { hour12: false }).replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, '$1') }" class="d-flex">

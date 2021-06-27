@@ -87,6 +87,11 @@ namespace StudentProgress.Core.UseCases
                 [DisplayFormat(NullDisplayText = "Unknown")]
                 public StatusInGroup? StatusInGroup { get; }
 
+                public int StudentStatusId { get; }
+
+                [Display(Name = "To Speak")]
+                public bool WantsToSpeakToTeacher { get; }
+
                 [Display(Name = "Date Last Spoken")]
                 [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", NullDisplayText = "Never")]
                 public DateTime? LastSpokenWithStudentDate
@@ -146,6 +151,8 @@ SELECT
     s.""Id"",
     s.""Name"",
     ss.""StatusInGroup"" as ""{nameof(Response.StudentsResponse.StatusInGroup)}"",
+    ss.""Id"" as ""{nameof(Response.StudentsResponse.StudentStatusId)}"",
+    ss.""WantsToSpeakToTeacher"" as ""{nameof(Response.StudentsResponse.WantsToSpeakToTeacher)}"",
     p.""Date"" as ""{nameof(Response.StudentsResponse.LastUpdateDate)}"",
     p.""ProgressFeeling"" as ""{nameof(Response.StudentsResponse.FeelingOfLatestProgress)}"",
     p.""Feedback"" as ""{nameof(Response.StudentsResponse.LastFeedback)}"",

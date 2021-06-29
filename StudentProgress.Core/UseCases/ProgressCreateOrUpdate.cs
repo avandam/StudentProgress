@@ -73,7 +73,7 @@ namespace StudentProgress.Core.UseCases
       if (result.IsFailure) return result;
 
       ProgressUpdate progressUpdate;
-      bool wantsToSpeakToTeacher = false;
+      var wantsToSpeakToTeacher = command.WantsToSpeakToTeacher;
 
       if (command.Id == null)
       {
@@ -84,9 +84,9 @@ namespace StudentProgress.Core.UseCases
             command.Feeling,
             command.Date,
             command.ProgressStatus);
-        if (command.ProgressStatus != ProgressStatus.FeedbackConversation)
+        if (command.ProgressStatus == ProgressStatus.FeedbackConversation)
         {
-            wantsToSpeakToTeacher = true;
+            wantsToSpeakToTeacher = false;
         }
         progressUpdate.AddMilestones(milestonesProgress.Value);
         await _context.ProgressUpdates.AddAsync(progressUpdate);
@@ -100,7 +100,6 @@ namespace StudentProgress.Core.UseCases
             .FirstOrDefaultAsync(p => p.Id == command.Id);
 
         progressUpdate.Update(command.Feeling, command.Date, command.Feedback, command.ProgressStatus);
-        wantsToSpeakToTeacher = command.WantsToSpeakToTeacher;
         UpdateMilestoneProgresses(progressUpdate, milestonesProgress.Value);
       }
 

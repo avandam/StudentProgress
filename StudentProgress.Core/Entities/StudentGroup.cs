@@ -22,11 +22,13 @@ namespace StudentProgress.Core.Entities
         public IReadOnlyList<Milestone> Milestones => _milestones;
 
 
-#nullable disable
-        private StudentGroup()
-        {
-        }
-#nullable enable
+//#nullable disable
+//        private StudentGroup()
+//        {
+//        }
+//#nullable enable
+
+        public StudentGroup() { }
 
         public StudentGroup(Name name, Period period, string? mnemonic = null)
         {

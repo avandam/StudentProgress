@@ -26,6 +26,7 @@ namespace StudentProgress.Web.Pages.StudentGroups
             }
 
             Group = await _context.Groups.FirstOrDefaultAsync(m => m.Id == id);
+            await _context.Entry(Group).Collection(group =>group.Students).LoadAsync();
 
             if (Group == null)
             {
@@ -43,7 +44,8 @@ namespace StudentProgress.Web.Pages.StudentGroups
 
             Group = await _context.Groups.FindAsync(id);
 
-            if (Group != null)
+
+            if (Group != null && Group.Students.Count == 0)
             {
                 _context.Groups.Remove(Group);
                 await _context.SaveChangesAsync();
